@@ -67,7 +67,7 @@
                 document.querySelector('.status').innerHTML = null;
 
                 document.querySelector('.server').innerHTML = `<b>${server}</b>`
-                document.querySelector('.binary').innerHTML = status.online;
+                document.querySelector('.binary').innerHTML = '';
 
                 //last updated - unix time
                 var lastUp = new Date(status.last_updated*1000);
