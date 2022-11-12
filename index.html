@@ -13,5 +13,110 @@
     <p>🐇😵‍💫</p>
     <p>I made tbis on my phone. My roommate is asleep, so I can't use my gamer macbook</p>
     <a href="https://secret.rhodes.vip">shh</a>
+    
+    <input type='text' class='input'>
+    <div class='broad'>
+        <b><span class='status'></span></b>
+        <br>
+        time: <span class='time'>pending...</span> EST
+        <br><br>
+        <span class='server'></span>: <span class='binary'>pending...</span>
+        <br>
+        last updated: <span class='lastUp'>pending...</span>
+    </div>
+
+    <div class='statContainer'>
+        <br>
+        stats:
+        <br>
+        <b><span class='stats'>pending...</span></b>
+        <br>
+    </div>
+    
+    <script src='https://mcapi.us/scripts/minecraft.min.js'></script>
+    <script>
+
+        var server = 'mc.rhodes.vip';
+
+        var stats = [
+            'motd',
+            'players',
+            'server',
+        ];
+
+        function sub(time){
+            time = time.toISOString().substring(11, 19);
+            return time;
+        };
+
+        function updateTime(){
+            var date = new Date();
+            document.querySelector('.time').innerHTML = sub(date);
+        };
+
+        function updateMinecraft(){
+            MinecraftAPI.getServerStatus(server, {
+            port: 25565
+            }, function (err, status) {
+
+                if (err) {
+                    server = 'mc.rhodes.vip';
+                    return document.querySelector('.status').innerHTML = 'invalid ip 🟥';
+                };
+
+                document.querySelector('.status').innerHTML = null;
+
+                document.querySelector('.server').innerHTML = `<b>${server}</b>`
+                document.querySelector('.binary').innerHTML = status.online ? '🟢' : '🟥';
+
+                //last updated - unix time
+                var lastUp = new Date(status.last_updated*1000);
+                document.querySelector('.lastUp').innerHTML = lastUp.toISOString().substring(0, 10) + ' - ' + lastUp.toISOString().substring(12, 19);
+
+// console.log(status);
+                var statsElem = document.querySelector('.stats');
+                statsElem.innerHTML = null;
+                for (let i = 0; i < stats.length; i++) {
+                    var stat = status[stats[i]];
+                    if (stats[i] == 'players' || stats[i] == 'server') {
+                        for (const elem in stat) {
+                            if (elem != 'sample'){
+                                statsElem.innerHTML += `${stats[i]} ${elem}:<pre>${stat[elem]}<br>`;
+                            };
+                        };
+                    } else {
+                        statsElem.innerHTML += `motd:<pre>${stat}`;
+                    };
+                };
+
+            });
+        };
+        
+        var i = 1;
+
+        function loop() {
+            setTimeout(function() {
+
+                var value = document.querySelector('.input').value;
+                if (value != '') {
+                    server = value;
+                    console.log(value);
+                } else {
+                    server = 'mc.rhodes.vip';
+                };
+
+                updateTime();
+                updateMinecraft();
+            i++;
+            if (i < Infinity) {
+                loop();
+            }
+            }, 1000)
+        };
+
+        loop();
+
+    </script>
+    
 </body>
 </html>
